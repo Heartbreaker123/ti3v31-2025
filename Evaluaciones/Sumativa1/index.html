@@ -1,11 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raíces Digitales - Talleres</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    
+  <header>
+    <h1>Coperativa Cultural Raíces Digitales</h1>
+    <p>Arte comunitario en movimiento</p>
+  </header>
+
+  <section class="presentacion">
+    <img src="assets/arte-comunitario.jpg" alt="Arte comunitario urbano" />
+  </section>
+
+  <section class="talleres">
+    <h2>Conoce nuestros talleres</h2>
+    <div class="tarjetas">
+      <div class="tarjeta">
+        <h3>Teatro Comunitario</h3>
+        <p>Explora tu expresión escénica en un espacio inclusivo y participativo.</p>
+        <span>Horario: Lunes y Martes, 16:00 - 18:00</span>
+      </div>
+      <div class="tarjeta">
+        <h3>Danza Urbana</h3>
+        <p>Movimiento y ritmo al servicio de la identidad y la cultura.</p>
+        <span>Horario: Martes y Miércoles, 17:00 - 19:00</span>
+      </div>
+      <div class="tarjeta">
+        <h3>Música y Percusión</h3>
+        <p>Ritmos colectivos para construir comunidad desde el sonido.</p>
+        <span>Horario: Sábados, 10:00 - 13:00</span>
+      </div>
+      <div class="tarjeta">
+        <h3>no se me ocurre nada</h3>
+        <p>aqui menos</p>
+        <span>por definir</span>
+      </div>
+      <div class="tarjeta">
+        <h3>no se me ocurre nada</h3>
+        <p>aqui menos</p>
+        <span>por definir</span>
+      </div>
+      <div class="tarjeta">
+        <h3>no se me ocurre nada</h3>
+        <p>aqui menos</p>
+        <span>por definir</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="contacto">
+    <h2>Contáctanos</h2>
+    <form>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required />
+
+      <label for="apellidos">Apellidos:</label>
+      <input type="text" id="apellidos" name="apellidos" required />
+
+      <label for="correo">Correo electrónico:</label>
+      <input type="email" id="correo" name="correo" required />
+
+      <label for="taller">Taller de interés:</label>
+      <select id="taller" name="taller">
+        <option value="teatro">Teatro Comunitario</option>
+        <option value="danza">Danza Urbana</option>
+        <option value="musica">Música y Percusión</option>
+      </select>
+
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>Síguenos en redes: @raicesdigitales</p>
+    <p>Contacto: contacto@raicesdigitales.cl</p>
+  </footer>
 </body>
 </html>
