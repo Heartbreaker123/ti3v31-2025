@@ -1,13 +1,11 @@
-/* css/styles.css */
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans&display=swap');
 
 :root {
-  --color-primario: #D72638; /* Rojo Carmesí */
-  --color-secundario: #1B1F3B; /* Azul Profundo */
-  --color-complementario: #F0C808; /* Amarillo Mostaza */
-  --color-neutral-claro: #F5F5F5; /* Gris Claro */
-  --color-neutral-oscuro: #2E2E2E; /* Gris Carbón */
+  --color-primario: #D72638;
+  --color-secundario: #1B1F3B;
+  --color-complementario: #F0C808;
+  --color-neutral-claro: #F5F5F5;
+  --color-neutral-oscuro: #2E2E2E;
   --fuente-titulos: 'Montserrat', sans-serif;
   --fuente-texto: 'Open Sans', sans-serif;
 }
@@ -45,8 +43,20 @@ header p {
 
 .presentacion img {
   width: 100%;
+  max-width: 800px;
   height: auto;
   display: block;
+  margin: 2rem auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
+  filter: contrast(1.05) brightness(0.97); /* mejora leve de color */
+}
+
+.presentacion img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+  filter: contrast(1.1) brightness(1); /* más vivos al hacer hover */
 }
 
 .talleres {
@@ -63,20 +73,38 @@ header p {
 
 .tarjetas {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 columnas */
-  gap: 1.5rem;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  justify-items: center;
 }
 
-
 .tarjeta {
-  background-color: var(--color-neutral-claro);
-  padding: 1rem;
-  border-left: 6px solid var(--color-complementario);
-  border-radius: 8px;
-  max-width: 300px;
-  color: var(--color-neutral-oscuro);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background-color: #F5F5F5;
+  border: 2px solid #F0C808;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #D72638;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background-color: #b71c2a;
+  transition: background-color 0.3s ease;
 }
 
 .tarjeta h3 {
@@ -132,7 +160,7 @@ button {
 }
 
 button:hover {
-  background-color: #b81e2c; /* tono más oscuro del rojo carmesí */
+  background-color: #b81e2c;
 }
 
 footer {
@@ -143,10 +171,51 @@ footer {
   margin-top: 2rem;
 }
 
-/* Responsivo */
 @media (max-width: 768px) {
   .tarjetas {
     flex-direction: column;
     align-items: center;
   }
+}
+
+.volver-arriba {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  font-size: 1rem;
+  text-decoration: none;
+  background-color: #D72638;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.volver-arriba:hover {
+  background-color: #b71c2a;
+}
+
+footer {
+  background-color: #2E2E2E;
+  color: #F5F5F5;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+footer .redes {
+  margin-bottom: 1rem;
+}
+
+footer .redes img {
+  width: 50px;
+  height: 50px;
+  margin: 0 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+footer .redes img:hover {
+  transform: scale(1.2);
 }
