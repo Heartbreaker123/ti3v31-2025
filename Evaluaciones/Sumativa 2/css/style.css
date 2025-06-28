@@ -219,3 +219,13 @@ footer .redes img {
 footer .redes img:hover {
   transform: scale(1.2);
 }
+
+textarea {
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-family: var(--fuente-texto);
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  min-height: 80px;
+}
