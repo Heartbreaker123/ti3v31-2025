@@ -229,3 +229,18 @@ textarea {
   resize: vertical;
   min-height: 80px;
 }
+
+.error {
+  color: #D72638;
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+input.error-input,
+select.error-input {
+  border: 2px solid #D72638;
+}
+
+

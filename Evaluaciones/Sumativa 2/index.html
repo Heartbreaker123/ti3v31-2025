@@ -6,6 +6,7 @@
   <title>Raíces Digitales - Talleres</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" />
+
 </head>
 <body>
   <header id="inicio">
@@ -15,7 +16,7 @@
   </header>
 
   <section class="presentacion">
-  <img src="assets/arte-comunitario.png" alt="Arte comunitario urbano" />
+    <img src="assets/arte-comunitario.png" alt="Arte comunitario urbano" />
   </section>
 
   <section class="talleres">
@@ -62,25 +63,29 @@
 
   <section class="contacto" id="registro">
     <h2>Regístrate:</h2>
-    <form id="formulario">
+    <form onsubmit="return validarFormulario()">
       <label for="nombres">Nombres:</label>
-      <input type="text" id="nombres" name="nombres" required>
+      <input type="text" id="nombres" name="nombres" required />
+      <span class="error" id="error-nombres"></span>
 
       <label for="apellidos">Apellidos:</label>
-      <input type="text" id="apellidos" name="apellidos" required>
+      <input type="text" id="apellidos" name="apellidos" required />
+      <span class="error" id="error-apellidos"></span>
 
-      <label for="rut">RUT:</label>
-      <input type="text" id="rut" name="rut" placeholder="12345678-9" required>
+      <label for="rut">Rut:</label>
+      <input type="text" id="rut" name="rut" required />
+      <span class="error" id="error-rut"></span>
 
       <label for="fecha">Fecha de nacimiento:</label>
-      <input type="text" id="fecha" name="fecha" placeholder="dd/mm/aaaa" required>
+      <input type="text" id="fecha" name="fecha" required />
+      <span class="error" id="error-fecha"></span>
 
       <label for="correo">Correo electrónico:</label>
-      <input type="email" id="correo" name="correo" placeholder="ejemplo@dominio.cl" required>
+      <input type="email" id="correo" name="correo" required />
+      <span class="error" id="error-correo"></span>
 
       <label for="taller">Taller de interés:</label>
-      <select id="taller" name="taller" required>
-        <option value="">Seleccione un taller</option>
+      <select id="taller" name="taller">
         <option value="teatro">Teatro Comunitario</option>
         <option value="danza">Danza Urbana</option>
         <option value="musica">Música y Percusión</option>
@@ -89,22 +94,134 @@
         <option value="fotografia">Fotografía Social</option>
       </select>
 
-      <label for="observaciones">Observaciones (opcional):</label>
-      <textarea id="observaciones" name="observaciones" rows="4"></textarea>
+      <label for="observaciones">Observaciones:</label>
+      <textarea id="observaciones" name="observaciones" rows="4" maxlength="300"></textarea>
 
       <button type="submit">Enviar</button>
     </form>
   </section>
 
-<footer>
-  <p>Contáctanos en nuestras redes:</p>
-  <div class="redes">
-    <span><img src="assets/email.png" alt="Email"></span>
-    <span><img src="assets/facebook.png" alt="Facebook"></span>
-    <span><img src="assets/instagram.png" alt="Instagram"></span>
-    <span><img src="assets/twitter.png" alt="Twitter"></span>
-  </div>
-  <a href="#inicio" class="volver-arriba">&#8679; Volver arriba</a>
-</footer>
+  <footer>
+    <p>Contáctanos en nuestras redes:</p>
+    <div class="redes">
+      <span><img src="assets/email.png" alt="Email"></span>
+      <span><img src="assets/facebook.png" alt="Facebook"></span>
+      <span><img src="assets/instagram.png" alt="Instagram"></span>
+      <span><img src="assets/twitter.png" alt="Twitter"></span>
+    </div>
+    <a href="#inicio" class="volver-arriba">⬆ Volver arriba</a>
+  </footer>
+
+  <script>
+    function mostrarError(idCampo, mensaje) {
+      document.getElementById(idCampo).textContent = mensaje;
+      const input = idCampo.replace('error-', '');
+      document.getElementById(input).classList.add('error-input');
+    }
+
+    function limpiarError(idCampo) {
+      document.getElementById(idCampo).textContent = '';
+      const input = idCampo.replace('error-', '');
+      document.getElementById(input).classList.remove('error-input');
+    }
+
+    function validarFormulario() {
+      const errores = document.querySelectorAll('.error');
+      for (let e of errores) {
+        if (e.textContent !== '') {
+          alert("Por favor corrige los errores antes de enviar.");
+          return false;
+        }
+      }
+      return true;
+    }
+
+    document.getElementById('nombres').addEventListener('input', function () {
+      const valor = this.value.trim();
+      const regex = /^[a-zA-ZÁÉÍÓÚÑáéíóúñ\s]+$/;
+      if (!regex.test(valor)) {
+        mostrarError('error-nombres', 'Solo se permiten letras y espacios.');
+      } else {
+        limpiarError('error-nombres');
+      }
+    });
+
+    document.getElementById('apellidos').addEventListener('input', function () {
+      const valor = this.value.trim();
+      const regex = /^[a-zA-ZÁÉÍÓÚÑáéíóúñ\s]+$/;
+      if (!regex.test(valor)) {
+        mostrarError('error-apellidos', 'Solo se permiten letras y espacios.');
+      } else {
+        limpiarError('error-apellidos');
+      }
+    });
+
+    document.getElementById('rut').addEventListener('blur', function () {
+      const rut = this.value.trim();
+      const rutRegex = /^\d{7,8}-[\dkK]$/;
+      if (!rutRegex.test(rut)) {
+        mostrarError('error-rut', 'Formato inválido. Ej: 12345678-9');
+      } else {
+        const [numero, dv] = rut.split('-');
+        if (calcularDV(numero) !== dv.toUpperCase()) {
+          mostrarError('error-rut', 'Dígito verificador incorrecto.');
+        } else {
+          limpiarError('error-rut');
+        }
+      }
+    });
+
+    function calcularDV(rut) {
+      let suma = 0;
+      let multiplo = 2;
+      for (let i = rut.length - 1; i >= 0; i--) {
+        suma += parseInt(rut[i]) * multiplo;
+        multiplo = multiplo === 7 ? 2 : multiplo + 1;
+      }
+      const resto = 11 - (suma % 11);
+      if (resto === 11) return '0';
+      if (resto === 10) return 'K';
+      return resto.toString();
+    }
+
+    document.getElementById('fecha').addEventListener('blur', function () {
+      const fecha = this.value.trim();
+      const partes = fecha.split('/');
+      if (partes.length !== 3) {
+        mostrarError('error-fecha', 'Formato debe ser dd/mm/aaaa');
+        return;
+      }
+
+      const [dd, mm, aaaa] = partes.map(Number);
+      if (dd < 1 || dd > 31 || mm < 1 || mm > 12 || aaaa < 1900) {
+        mostrarError('error-fecha', 'Fecha fuera de rango válido');
+        return;
+      }
+
+      const hoy = new Date();
+      const nac = new Date(aaaa, mm - 1, dd);
+      const edad = hoy.getFullYear() - nac.getFullYear();
+      const m = hoy.getMonth() - nac.getMonth();
+      const d = hoy.getDate() - nac.getDate();
+      const edadReal = (m < 0 || (m === 0 && d < 0)) ? edad - 1 : edad;
+
+      if (edadReal < 14) {
+        mostrarError('error-fecha', 'Debes tener al menos 14 años');
+      } else {
+        limpiarError('error-fecha');
+      }
+    });
+
+    document.getElementById('correo').addEventListener('input', function () {
+      const valor = this.value.trim();
+      const correoRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{2,}$/;
+      if (!correoRegex.test(valor)) {
+        mostrarError('error-correo', 'Correo no válido. Ej: persona@dominio.cl');
+      } else {
+        limpiarError('error-correo');
+      }
+    });
+  </script>
+
 </body>
 </html>
