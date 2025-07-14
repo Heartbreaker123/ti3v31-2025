@@ -1,7 +1,7 @@
 import Image from "next/image";
 
-import { useEffect, useState } from "react";
-import ClienteCard from "./components/ClienteCard"
+/* import { useEffect, useState } from "react";
+import ClienteCard from "./components/ClienteCard" */
 
 export default function Home() {
   return (
