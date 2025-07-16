@@ -1,106 +1,100 @@
-import Image from "next/image";
+"use client";
 
-/* import { useEffect, useState } from "react";
-import ClienteCard from "./components/ClienteCard" */
+// Importamos las bibliotecas para utilizar efectos y estados de objetos
+import { useEffect, useState } from "react";
 
+// Importamos el componente reusable ClienteCard
+import ClienteCard from "./components/ClienteCard";
+
+// Definimos el componente principal de la página
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // Se declaran los 3 objetos que representarán las entidades de dato de la API
+  const [clientes, setClientes] = useState([]);
+  const [ventas, setVentas] = useState([]);
+  const [relaciones, setRelaciones] = useState([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Se declara objeto que definirá si aparece o no el mensaje "Cargando datos"
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    // Definición de la función asíncrona para obtener los datos de la API
+    async function fetchData() {
+      try {
+        // Definimos los objetos y llamamos a los servicios de la API
+        const [clientesRes, ventasRes, relacionesRes] = await Promise.all([
+          fetch("https://apiclases.inacode.cl/apiIOTBE/clientes"),
+          fetch("https://apiclases.inacode.cl/apiIOTBE/ventas"),
+          fetch("https://apiclases.inacode.cl/apiIOTBE/asociaciones/clientes-venta"),
+        ]);
+
+        // Definimos las variables que estarán esperando los datos de respuesta de 
+        // los servicios de la API
+        const [clientesData, ventasData, relacionesData] = await Promise.all([
+          clientesRes.json(),
+          ventasRes.json(),
+          relacionesRes.json(),
+        ]);
+
+        // Almacenamiento de los datos ya obtenidos en los objetos que representan
+        // las entidades de datos de la API.
+        setClientes(clientesData);
+        setVentas(ventasData);
+        setRelaciones(relacionesData);
+      } catch (error) {
+        // En caso de error, no se detiene el programa
+        console.error("Error al cargar datos:", error);
+      } finally {
+        // Si todo sale bien, se deja de mostrar el mensaje "Cargando datos"
+        setCargando(false);
+      }
+    }
+
+    // Se invoca a la función que obtiene y almacena los datos de la API
+    fetchData();
+  }, []);
+
+  // Definir una estructura que relaciona los datos de Ventas por Cliente 
+  const obtenerVentasPorCliente = (clienteId) => {
+    // Se realiza la consulta de las ventas del cliente identificado clienteId
+    const ventasCliente = relaciones
+      .filter(rel => rel.clientes_id_cliente === clienteId)
+      .map(rel => ventas.find(v => v.id_venta === rel.venta_id_venta))
+      .filter(Boolean);
+
+    // Se calcula el total de todas las ventas del cliente
+    const total = ventasCliente.reduce((sum, venta) => {
+      const monto = parseFloat(venta.totalVenta || 0);
+      return sum + (isNaN(monto) ? 0 : monto);
+    }, 0);
+
+    // Devuelve la información de las ventas del cliente y el total sumado
+    return { ventas: ventasCliente, total };
+  };
+
+  // Esto es lo que se dibuja en la pagína (es el "children")
+  return (
+    <main className="min-h-screen bg-gray-100 p-8">
+      {cargando ? (
+        <p className="text-center text-gray-500">Cargando datos...</p>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {clientes.map(cliente => {
+            const { ventas, total } = obtenerVentasPorCliente(cliente.id_cliente);
+            return (
+              // Aquí se hace referencia a la componente ClienteCard
+              <ClienteCard
+                key={cliente.id_cliente}
+                nombre={cliente.nombre}
+                apellido={cliente.apellido}
+                correo={cliente.correo}
+                telefono={cliente.telefono}
+                totalVentas={total}
+                ventas={ventas}
+              />
+            );
+          })}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      )}
+    </main>
   );
 }

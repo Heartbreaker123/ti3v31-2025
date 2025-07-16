@@ -1,30 +1,40 @@
+/* Se incorpota TailwindCSS a la plantilla */
 @import "tailwindcss";
 
+/* Se importan las familias de componentes de Tailwind a utilizar */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Se define el CSS que se quiere utilizar en particular */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5rem;
+}
+
+header {
+  background-color: #1B1F3B;
+  text-align: center;
+  padding: 1rem
+}
+
+header h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: #F0C808;
+  font-size: 2.5rem;
+}
+
+hr {
+  padding-top: 1rem;
+}
+
+footer {
+  background-color: #2E2E2E;
+  color: white;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+footer a {
+  color: #F0C808;
+  text-decoration: none;
 }
