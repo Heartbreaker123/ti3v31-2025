@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
         {children}
         <hr className="border-red-500"/>
         <footer>
-          <p>Creado por: <a href="mailto:camilomonsalve07@inacapmail.cl">Camilo Monsalve</a></p>
+          <p>Creado por: <a href="mailto: camilomonsalve07@inacapmail.cl">Camilo Monsalve</a></p>
         </footer>
       </body>
     </html>
