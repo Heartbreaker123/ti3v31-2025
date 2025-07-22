@@ -1,70 +1,82 @@
 "use client";
 
-// Importamos las bibliotecas para utilizar efectos y estados de objetos
 import { useEffect, useState } from "react";
-
-// Importamos el componente reusable ClienteCard
 import InscripcionCard from "./components/InscripcionCard";
 
-// Definimos el componente principal de la página
 export default function Home() {
-  // Se declaran los 3 objetos que representarán las entidades de dato de la API
   const [inscripciones, setInscripciones] = useState([]);
   const [talleres, setTalleres] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
-    // Definición de la función asíncrona para obtener los datos de la API
     async function fetchData() {
       try {
-        // Definimos los objetos y llamamos a los servicios de la API
         const [inscripcionesRes, talleresRes] = await Promise.all([
           fetch("https://ejemplo-firebase-657d0-default-rtdb.firebaseio.com/inscripciones.json"),
           fetch("https://ejemplo-firebase-657d0-default-rtdb.firebaseio.com/talleres.json"),
         ]);
 
-        // Definimos las variables que estarán esperando los datos de respuesta de 
-        // los servicios de la API
         const [inscripcionesData, talleresData] = await Promise.all([
           inscripcionesRes.json(),
           talleresRes.json(),
         ]);
 
-        // Filtramos valores null y aseguramos que sean arreglos
         const arregloInscripciones = inscripcionesData ? inscripcionesData.filter(item => item !== null) : [];
         const arregloTalleres = talleresData ? talleresData.filter(item => item !== null) : [];
 
-        // Almacenamiento de los datos ya obtenidos en los objetos que representan
-        // las entidades de datos de la API.
         setInscripciones(arregloInscripciones);
         setTalleres(arregloTalleres);
       } catch (error) {
-        // En caso de error, no se detiene el programa
         console.error("Error al cargar datos:", error);
       } finally {
-        // Si todo sale bien, se deja de mostrar el mensaje "Cargando datos"
         setCargando(false);
       }
     }
 
-    // Se invoca a la función que obtiene y almacena los datos de la API
     fetchData();
   }, []);
 
-  // Función para obtener detalles de un taller por su ID
   const obtenerTallerPorId = (idTaller) => {
     return talleres.find((taller) => taller.id === idTaller) || {};
   };
 
+  const filtrarInscripciones = () => {
+    return inscripciones.filter((inscripcion) => {
+      const nombreCompleto = `${inscripcion.nombres || ""} ${inscripcion.apellidos || ""}`.toLowerCase();
+      const correo = inscripcion.correo?.toLowerCase() || "";
+      const termino = busqueda.toLowerCase();
+      return nombreCompleto.includes(termino) || correo.includes(termino);
+    });
+  };
+
+  const inscripcionesFiltradas = filtrarInscripciones();
+  const sinInscripciones = inscripciones.length === 0 && !cargando;
+  const sinResultadosBusqueda = inscripciones.length > 0 && inscripcionesFiltradas.length === 0;
+
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
+    <section className="talleres">
+      <h2 className="titulo-seccion">Inscripciones Registradas</h2>
+
+      <div className="buscador">
+        <input
+          type="text"
+          placeholder="Buscar por nombre o correo..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+        />
+      </div>
+
       {cargando ? (
-        <p className="text-center text-gray-500">Cargando datos...</p>
+        <p className="mensaje-vacio">Cargando datos...</p>
+      ) : sinInscripciones ? (
+        <p className="mensaje-vacio">No hay inscripciones disponibles en este momento.</p>
+      ) : sinResultadosBusqueda ? (
+        <p className="mensaje-vacio">No se encontraron resultados para tu búsqueda.</p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {inscripciones.map((inscripcion) => {
+        <div className="tarjetas">
+          {inscripcionesFiltradas.map((inscripcion) => {
             const taller = obtenerTallerPorId(inscripcion.taller);
-            // Combinamos nombres y apellidos para mostrar un nombre completo
             const nombreCompleto = `${inscripcion.nombres || ''} ${inscripcion.apellidos || ''}`.trim();
             return (
               <InscripcionCard
@@ -79,6 +91,7 @@ export default function Home() {
           })}
         </div>
       )}
-    </main>
+    </section>
   );
 }
+

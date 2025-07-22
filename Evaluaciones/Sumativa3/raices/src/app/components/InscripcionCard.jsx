@@ -1,21 +1,13 @@
-export default function InscriptionCard({ nombres, apellidos, correo, tallerNombre, tallerDescripcion, tallerProfesor }) {
+export default function InscripcionCard({ nombres, correo, tallerNombre, tallerDescripcion, tallerProfesor }) {
   return (
-    <div className="tarjeta">
-      <h3 className="text-lg font-semibold" style={{ fontFamily: 'var(--fuente-titulos)', color: 'var(--color-primario)' }}>
-        {nombres} {apellidos}
-      </h3>
-      <p style={{ fontFamily: 'var(--fuente-texto)' }}>
-        <span className="font-bold">Correo:</span> {correo}
-      </p>
-      <p style={{ fontFamily: 'var(--fuente-texto)' }}>
-        <span className="font-bold">Taller:</span> {tallerNombre}
-      </p>
-      <p style={{ fontFamily: 'var(--fuente-texto)' }}>
-        <span className="font-bold">Descripción:</span> {tallerDescripcion}
-      </p>
-      <p style={{ fontFamily: 'var(--fuente-texto)' }}>
-        <span className="font-bold">Profesor:</span> {tallerProfesor}
-      </p>
+    <div className="tarjeta tarjeta-hover">
+      <h3 className="nombre-inscrito">{nombres}</h3>
+      <p className="campo"><strong>Correo:</strong> {correo}</p>
+      <p className="campo"><strong>Taller:</strong> {tallerNombre}</p>
+      <span className="descripcion">{tallerDescripcion}</span>
+      <p className="campo"><strong>Profesor:</strong> {tallerProfesor}</p>
     </div>
   );
 }
+
+
